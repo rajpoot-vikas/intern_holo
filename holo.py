@@ -2,6 +2,7 @@ import asyncio
 import base64
 import json
 import logging
+import re
 from io import BytesIO
 from typing import Dict, List, Tuple, Optional, Any, Literal, Union
 from dataclasses import dataclass
@@ -226,9 +227,20 @@ class Holo1Localizer:
             response = self.model.run_inference(prompt, image)
             
             if use_structured:
-                # Parse JSON response
-                action_data = json.loads(response)
-                return (action_data["x"], action_data["y"])
+                try:
+                    # First, try to parse the response as valid JSON
+                    action_data = json.loads(response)
+                    return (action_data["x"], action_data["y"])
+                except json.JSONDecodeError:
+                    # If JSON parsing fails, fall back to regex to find coordinates
+                    logger.warning(f"Could not parse JSON: '{response}'. Falling back to regex.")
+                    match = re.search(r'"x":\s*(\d+),\s*"y":\s*(\d+)', response)
+                    if match:
+                        x = int(match.group(1))
+                        y = int(match.group(2))
+                        return (x, y)
+                    else:
+                        raise ValueError(f"Could not extract coordinates from malformed response: {response}")
             else:
                 # Parse Click(x, y) format
                 if "Click(" in response:
@@ -245,35 +257,45 @@ class Holo1Localizer:
 class Holo1Navigator:
     """Holo1 Navigation functionality"""
     
-    SYSTEM_PROMPT = """Imagine you are a robot browsing the web, just like humans. Now you need to complete a task.
-In each iteration, you will receive an Observation that includes the screenshot of a web browser and the current memory of the agent.
-Carefully analyze the visual information to identify what to do, then follow the guidelines to choose the following action.
-You should detail your thought (i.e. reasoning steps) before taking the action.
-Also detail in the notes field of the action the extracted information relevant to solve the task.
-Once you have enough information in the notes to answer the task, return an answer action with the detailed answer in the content field.
+    SYSTEM_PROMPT: str = """Imagine you are a robot browsing the web, just like humans. Now you need to complete a task.
+    In each iteration, you will receive an Observation that includes the last  screenshots of a web browser and the current memory of the agent.
+    You have also information about the step that the agent is trying to achieve to solve the task.
+    Carefully analyze the visual information to identify what to do, then follow the guidelines to choose the following action.
+    You should detail your thought (i.e. reasoning steps) before taking the action.
+    Also detail in the notes field of the action the extracted information relevant to solve the task.
+    Once you have enough information in the notes to answer the task, return an answer action with the detailed answer in the notes field.
+    This will be evaluated by an evaluator and should match all the criteria or requirements of the task.
 
-Guidelines:
-- Store in the notes all the relevant information to solve the task that fulfill the task criteria. Be precise
-- If you want to write in a text field and the text field already has text, designate the text field by the text it contains and its type
-- If there is a cookies notice, always accept all the cookies first
-- If you see relevant information on the screenshot to answer the task, add it to the notes field of the action.
-- If there is no relevant information on the screenshot to answer the task, add an empty string to the notes field of the action.
-- If you see buttons that allow to navigate directly to relevant information, like jump to ... or go to ... , use them to navigate faster.
-- In the answer action, give as many details as possible relevant to answering the task.
-- If you want to write, don't click before. Directly use the write action
-- To write, identify the web element which is type and the text it already contains
-- If you want to use a search bar, directly write text in the search bar
-- Don't scroll too much. Don't scroll if the number of scrolls is greater than 3
-- Don't scroll if you are at the end of the webpage
-- Only refresh if you identify a rate limit problem
-- Never try to login, enter email or password. If there is a need to login, then go back.
-- If you are facing a captcha on a website, try to solve it.
-- If you have enough information in the screenshot and in the notes to answer the task, return an answer action with the detailed answer in the content field
-- The current date is {timestamp}.
+    Guidelines:
+    - store in the notes all the relevant information to solve the task that fulfill the task criteria. Be precise
+    - Use both the task and the step information to decide what to do
+    - if you want to write in a text field and the text field already has text, designate the text field by the text it contains and its type
+    - If there is a cookies notice, always accept all the cookies first
+    - The observation is the screenshot of the current page and the memory of the agent.
+    - If you see relevant information on the screenshot to answer the task, add it to the notes field of the action.
+    - If there is no relevant information on the screenshot to answer the task, add an empty string to the notes field of the action.
+    - If you see buttons that allow to navigate directly to relevant information, like jump to ... or go to ... , use them to navigate faster.
+    - In the answer action, give as many details a possible relevant to answering the task.
+    - if you want to write, don't click before. Directly use the write action
+    - to write, identify the web element which is type and the text it already contains
+    - If you want to use a search bar, directly write text in the search bar
+    - Don't scroll too much. Don't scroll if the number of scrolls is greater than 3
+    - Don't scroll if you are at the end of the webpage
+    - Only refresh if you identify a rate limit problem
+    - If you are looking for a single flights, click on round-trip to select 'one way'
+    - Never try to login, enter email or password. If there is a need to login, then go back.
+    - If you are facing a captcha on a website, try to solve it.
 
-You must respond with a valid JSON format following this schema:
-{output_format}
-"""
+    - if you have enough information in the screenshot and in the notes to answer the task, return an answer action with the detailed answer in the notes field
+    - The current date is {timestamp}.
+
+    # <output_json_format>
+    # ```json
+    # {output_format}
+    # ```
+    # </output_json_format>
+
+    """ 
     
     def __init__(self, model: Holo1Model):
         self.model = model
