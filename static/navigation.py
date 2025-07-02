@@ -184,3 +184,7 @@ def get_navigation_prompt(task, image, step=1):
             ],
         },
     ]
+
+
+
+

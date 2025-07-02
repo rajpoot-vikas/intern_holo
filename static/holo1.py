@@ -15,4 +15,5 @@ result = playwright_agent.run_task(
     starting_url="https://amazon.com",
     max_steps=25
 )
-print(f"Task completed: {result}")
+print(f"Task completed: {result}") 
+

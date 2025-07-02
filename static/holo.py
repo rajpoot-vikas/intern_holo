@@ -103,6 +103,7 @@ class AgentMemory:
         if self.actions is None:
             self.actions = []
 
+
 class Holo1Model:
     """Holo1 model for both localization and navigation tasks"""
     
@@ -368,7 +369,7 @@ class Holo1Navigator:
         if not memory.actions:
             return "No previous actions"
         
-        context_parts = []
+        context_parts = [] 
         
         # Include last 3 actions for context
         for i, step in enumerate(memory.actions[-3:]):
@@ -532,6 +533,7 @@ class WebNavigationAgent:
         logger.warning("Reached maximum steps, forcing completion")
         return "Task could not be completed within the step limit"
 
+
 # Example usage
 async def main():
     """Example usage of the web navigation agent"""
@@ -554,4 +556,7 @@ async def main():
         agent.cleanup()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    print("\033[92m starting the program \033[0m")
+    asyncio.run(main()) 
+
+

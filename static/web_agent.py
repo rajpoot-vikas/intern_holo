@@ -21,7 +21,7 @@ class WebBrowsingAgent:
     
     def __init__(self, model_name: str = "Hcompany/Holo1-7B"):
         """Initialize the agent with Holo1 model."""
-        print("Loading Holo1 model...")
+        print("Loading Holo1 model...") 
         self.model = AutoModelForImageTextToText.from_pretrained(
             model_name,
             torch_dtype="auto",
@@ -320,15 +320,15 @@ class WebBrowsingAgent:
     
     def run_task(self, task: str, browser_controller, max_steps: Optional[int] = None) -> Dict[str, Any]:
         """
-        Run a complete browsing task.
-        
-        Args:
-            task: Task description
-            browser_controller: Browser controller object
-            max_steps: Maximum number of steps (optional)
+            Run a complete browsing task.
             
-        Returns:
-            Final result dictionary
+            Args:
+                task: Task description
+                browser_controller: Browser controller object
+                max_steps: Maximum number of steps (optional)
+                
+            Returns:
+                Final result dictionary
         """
         if max_steps:
             self.max_steps = max_steps
@@ -337,7 +337,7 @@ class WebBrowsingAgent:
         print(f"Starting task: {task}")
         
         while self.current_step <= self.max_steps:
-            # Get current screenshot
+            # Get current screenshot 
             screenshot = browser_controller.get_screenshot()
             
             # Execute one step
@@ -472,4 +472,6 @@ if __name__ == "__main__":
     # agent.interactive_mode(browser)
     
     print("Web Browsing Agent initialized successfully!")
-    print("Implement your BrowserController class and start using the agent.")
+    print("Implement your BrowserController class and start using the agent.") 
+
+
