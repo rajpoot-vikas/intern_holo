@@ -1,7 +1,6 @@
 import asyncio
 import base64
 import json
-import logging
 import re
 from io import BytesIO
 from typing import Dict, List, Tuple, Optional, Any, Literal, Union
@@ -18,10 +17,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from PIL import Image
 from pydantic import BaseModel, Field
+from Utils.color_logger import get_logger
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 # Model configuration
 HF_MODEL_REPO = "Hcompany/Holo1-3B"
@@ -535,10 +534,11 @@ class WebNavigationAgent:
 
 
 # Example usage
-async def main():
+async def run():
     """Example usage of the web navigation agent"""
     
     # Create agent
+    print()
     agent = WebNavigationAgent()
     
     try:
@@ -555,8 +555,9 @@ async def main():
         # Always cleanup
         agent.cleanup()
 
-if __name__ == "__main__":
-    print("\033[92m starting the program \033[0m")
-    asyncio.run(main()) 
+
+# if __name__ == "__main__":
+#     print("\033[92m starting the program \033[0m")
+#     asyncio.run(main())
 
 

@@ -3,6 +3,10 @@ from typing import Any, Literal
 
 from pydantic import BaseModel
 
+from Utils.color_logger import get_logger
+
+logger = get_logger(__name__)
+
 
 def get_localization_prompt(image, instruction: str) -> list[dict[str, Any]]:
     guidelines: str = "Localize an element on the GUI image according to my instructions and output a click position as Click(x, y) with x num pixels from the left edge and y num pixels from the top edge."
