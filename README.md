@@ -1,3 +1,4 @@
+```mermaid
 flowchart TD
     A[Start] --> B{Is user logged in?}
     B -->|Yes| C[Show Dashboard]
@@ -16,3 +17,4 @@ flowchart TD
     K --> N[End]
     L --> N
     M --> N
+```
