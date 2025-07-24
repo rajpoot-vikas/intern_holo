@@ -953,7 +953,6 @@ rajpoot-vikas: give me details on the technology and system design. and give bes
 
 GitHub Copilot: I'll provide detailed technology specifications and system design recommendations with a focus on real-time conversation capabilities.
 
-````markdown
 <!-- ...existing code... -->
 
 ## Technology Stack Details & Real-time Conversation Design
@@ -1271,13 +1270,12 @@ interface RealTimeMetrics {
 ```
 
 This design provides a robust foundation for real-time AI conversations with sub-400ms latency and natural interaction patterns.
-````
+
 
 rajpoot-vikas: don't start coding give more clearty on design aspects only.
 
 GitHub Copilot: I'll provide more detailed design aspects focusing on architecture, patterns, and system design principles without code implementation.
 
-````markdown
 ## Advanced System Design Aspects
 
 ### Real-time Conversation Design Philosophy
@@ -1759,4 +1757,3 @@ graph TB
 - **Right to Erasure**: Complete data deletion capabilities
 
 This comprehensive design framework ensures your AI customer support system is built with scalability, reliability, and performance as core principles while maintaining security and compliance standards.
-````
