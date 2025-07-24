@@ -341,7 +341,7 @@ rajpoot-vikas: give me more details and project structure for my better underand
 
 GitHub Copilot: I'll provide you with a detailed project structure and comprehensive system details for your AI-based customer support system.
 
-````markdown
+markdown
 # AI Customer Support System - Detailed Architecture
 
 ## Project Structure
@@ -945,7 +945,7 @@ graph TB
 - **A/B Testing**: Test different AI models simultaneously
 - **Feature Flags**: Gradual rollout of new features
 - **Cost Optimization**: Route calls to most cost-effective providers
-````
+
 
 This comprehensive architecture provides a solid foundation for building your AI customer support system with flexibility, scalability, and maintainability in mind.
 
